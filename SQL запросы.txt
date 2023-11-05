@@ -1,0 +1,43 @@
+CREATE TABLE "Artists"
+(
+    [ArtistId] INTEGER  NOT NULL,
+    [Name] NVARCHAR(120), Pseudonym TEXT(15), Alboms INTEGER, Genres INTEGER,
+    CONSTRAINT [PK_Artist] PRIMARY KEY  ([ArtistId])
+);
+
+CREATE UNIQUE INDEX [IPK_Artist] ON "Artists"([ArtistId]);
+
+
+CREATE TABLE "Collection of tracks" (
+	Collection_id INTEGER,
+	Name TEXT,
+	Tracks INTEGER
+);
+
+
+CREATE TABLE "Music genres"
+(
+    "Genre_Id" INTEGER  NOT NULL,
+    [Name] NVARCHAR(120), Artists INTEGER,
+    CONSTRAINT [PK_Genre] PRIMARY KEY  ("Genre_Id")
+);
+
+CREATE UNIQUE INDEX [IPK_Genre] ON "Music genres"("Genre_Id");
+
+CREATE TABLE Tracks (
+	Track_Id INTEGER,
+	Name NVARCHAR,
+	Album_Id INTEGER,
+	Duration INTEGER,
+	CONSTRAINT PK_Track PRIMARY KEY (Track_Id)
+);
+
+
+CREATE TABLE Alboms (
+	AlbumId INTEGER,
+	ArtistId INTEGER,
+	Tracks INTEGER,
+	"Year" INTEGER, "Albom name" TEXT(15),
+	CONSTRAINT PK_Album PRIMARY KEY (AlbumId),
+	CONSTRAINT FK_Album_Artist FOREIGN KEY (ArtistId) REFERENCES Artists(ArtistId)
+);
