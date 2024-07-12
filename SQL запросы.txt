@@ -1,43 +1,132 @@
-CREATE TABLE "Artists"
-(
-    [ArtistId] INTEGER  NOT NULL,
-    [Name] NVARCHAR(120), Pseudonym TEXT(15), Alboms INTEGER, Genres INTEGER,
-    CONSTRAINT [PK_Artist] PRIMARY KEY  ([ArtistId])
+ALTER TABLE "MusicMarket".alboms ADD albom_id numeric NOT NULL;
+
+-- Drop table
+
+-- DROP TABLE "MusicMarket"."Collection of tracks";
+
+CREATE TABLE "MusicMarket"."Collection of tracks" (
+	collection_id numeric NOT NULL,
+	"Name" varchar NOT NULL,
+	CONSTRAINT collection_of_tracks_tracks_collection_of_tracks_fk FOREIGN KEY (collection_id) REFERENCES "MusicMarket"."Tracks/Collection of tracks"(track_id)
 );
 
-CREATE UNIQUE INDEX [IPK_Artist] ON "Artists"([ArtistId]);
+ALTER TABLE "MusicMarket"."MusicGenres/Artists" ADD artist_id numeric NOT NULL;
 
+ALTER TABLE "MusicMarket".artists ADD pseudonym text NOT NULL;
 
-CREATE TABLE "Collection of tracks" (
-	Collection_id INTEGER,
-	Name TEXT,
-	Tracks INTEGER
+ALTER TABLE "MusicMarket".tracks ADD "Name" varchar NOT NULL;
+
+ALTER TABLE "MusicMarket"."Alboms/Artists" ADD album_id numeric NOT NULL;
+
+ALTER TABLE "MusicMarket".musicgenres ADD genre_id numeric NOT NULL;
+
+-- Drop table
+
+-- DROP TABLE "MusicMarket"."Tracks/Collection of tracks";
+
+CREATE TABLE "MusicMarket"."Tracks/Collection of tracks" (
+	track_id numeric NOT NULL,
+	collection_id numeric NOT NULL,
+	CONSTRAINT tracks_collection_of_tracks_unique UNIQUE (track_id),
+	CONSTRAINT tracks_collection_of_tracks_unique_1 UNIQUE (collection_id)
 );
 
+ALTER TABLE "MusicMarket".tracks ADD albom_id numeric NOT NULL;
 
-CREATE TABLE "Music genres"
-(
-    "Genre_Id" INTEGER  NOT NULL,
-    [Name] NVARCHAR(120), Artists INTEGER,
-    CONSTRAINT [PK_Genre] PRIMARY KEY  ("Genre_Id")
+ALTER TABLE "MusicMarket".tracks ADD duration time NOT NULL;
+
+-- Drop table
+
+-- DROP TABLE "MusicMarket"."Alboms/Artists";
+
+CREATE TABLE "MusicMarket"."Alboms/Artists" (
+	artist_id numeric NOT NULL,
+	album_id numeric NOT NULL,
+	CONSTRAINT alboms_artists_unique UNIQUE (artist_id),
+	CONSTRAINT alboms_artists_unique_1 UNIQUE (album_id)
 );
 
-CREATE UNIQUE INDEX [IPK_Genre] ON "Music genres"("Genre_Id");
+ALTER TABLE "MusicMarket"."Collection of tracks" ADD collection_id numeric NOT NULL;
 
-CREATE TABLE Tracks (
-	Track_Id INTEGER,
-	Name NVARCHAR,
-	Album_Id INTEGER,
-	Duration INTEGER,
-	CONSTRAINT PK_Track PRIMARY KEY (Track_Id)
+ALTER TABLE "MusicMarket".artists ADD artists_id numeric NOT NULL;
+
+ALTER TABLE "MusicMarket"."Tracks/Collection of tracks" ADD collection_id numeric NOT NULL;
+
+ALTER TABLE "MusicMarket".tracks ADD track_id numeric NOT NULL;
+
+ALTER TABLE "MusicMarket".artists ADD "Name" varchar NOT NULL;
+
+ALTER TABLE "MusicMarket"."Alboms/Artists" ADD artist_id numeric NOT NULL;
+
+ALTER TABLE "MusicMarket"."Tracks/Collection of tracks" ADD track_id numeric NOT NULL;
+
+-- Drop table
+
+-- DROP TABLE "MusicMarket".alboms;
+
+CREATE TABLE "MusicMarket".alboms (
+	albom_id numeric NOT NULL,
+	"Name" varchar NOT NULL,
+	"Year" numrange NOT NULL,
+	CONSTRAINT alboms_pk PRIMARY KEY (albom_id),
+	CONSTRAINT alboms_alboms_artists_fk FOREIGN KEY (albom_id) REFERENCES "MusicMarket"."Alboms/Artists"(artist_id)
 );
 
+ALTER TABLE "MusicMarket".alboms ADD "Year" numrange NOT NULL;
 
-CREATE TABLE Alboms (
-	AlbumId INTEGER,
-	ArtistId INTEGER,
-	Tracks INTEGER,
-	"Year" INTEGER, "Albom name" TEXT(15),
-	CONSTRAINT PK_Album PRIMARY KEY (AlbumId),
-	CONSTRAINT FK_Album_Artist FOREIGN KEY (ArtistId) REFERENCES Artists(ArtistId)
+-- Drop table
+
+-- DROP TABLE "MusicMarket".musicgenres;
+
+CREATE TABLE "MusicMarket".musicgenres (
+	genre_id numeric NOT NULL,
+	"name" varchar NOT NULL,
+	CONSTRAINT musicgenres_pk PRIMARY KEY (genre_id),
+	CONSTRAINT musicgenres_musicgenres_artists_fk FOREIGN KEY (genre_id) REFERENCES "MusicMarket"."MusicGenres/Artists"(artist_id)
+);
+
+-- Drop table
+
+-- DROP TABLE "MusicMarket".artists;
+
+CREATE TABLE "MusicMarket".artists (
+	artists_id numeric NOT NULL,
+	"Name" varchar NOT NULL,
+	pseudonym text NOT NULL,
+	CONSTRAINT artists_pk PRIMARY KEY (artists_id),
+	CONSTRAINT artists_alboms_artists_fk FOREIGN KEY (artists_id) REFERENCES "MusicMarket"."Alboms/Artists"(artist_id),
+	CONSTRAINT artists_musicgenres_artists_fk FOREIGN KEY (artists_id) REFERENCES "MusicMarket"."MusicGenres/Artists"(artist_id)
+);
+
+ALTER TABLE "MusicMarket".musicgenres ADD "name" varchar NOT NULL;
+
+ALTER TABLE "MusicMarket"."MusicGenres/Artists" ADD genre_id numeric NOT NULL;
+
+ALTER TABLE "MusicMarket"."Collection of tracks" ADD "Name" varchar NOT NULL;
+
+ALTER TABLE "MusicMarket".alboms ADD "Name" varchar NOT NULL;
+
+-- Drop table
+
+-- DROP TABLE "MusicMarket"."MusicGenres/Artists";
+
+CREATE TABLE "MusicMarket"."MusicGenres/Artists" (
+	artist_id numeric NOT NULL,
+	genre_id numeric NOT NULL,
+	CONSTRAINT musicgenres_artists_unique UNIQUE (artist_id),
+	CONSTRAINT musicgenres_artists_unique_1 UNIQUE (genre_id)
+);
+
+-- Drop table
+
+-- DROP TABLE "MusicMarket".tracks;
+
+CREATE TABLE "MusicMarket".tracks (
+	track_id numeric NOT NULL,
+	"Name" varchar NOT NULL,
+	duration time NOT NULL,
+	albom_id numeric NOT NULL,
+	CONSTRAINT tracks_pk PRIMARY KEY (track_id),
+	CONSTRAINT tracks_alboms_fk FOREIGN KEY (albom_id) REFERENCES "MusicMarket".alboms(albom_id),
+	CONSTRAINT tracks_tracks_collection_of_tracks_fk FOREIGN KEY (track_id) REFERENCES "MusicMarket"."Tracks/Collection of tracks"(track_id)
 );
